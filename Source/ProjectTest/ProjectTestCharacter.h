@@ -61,5 +61,22 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+// Dash functions and varaibles
+#pragma region Dash
+
+protected:
+
+	void Dash();
+	void DashCooldownReset();
+
+	float DashCooldownTime;
+
+	UPROPERTY(BlueprintReadOnly);
+	bool bDashInCooldown;
+
+	FTimerHandle DashTimerHandler;
+
+#pragma endregion
 };
 

@@ -35,6 +35,7 @@ AProjectTestCharacter::AProjectTestCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->BrakingFriction = 5.f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -46,6 +47,12 @@ AProjectTestCharacter::AProjectTestCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	// Set default values for variables
+	bDashInCooldown = false;
+	DashCooldownTime = 2.f;
+
+
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -60,6 +67,8 @@ void AProjectTestCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AProjectTestCharacter::Dash);
 
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AProjectTestCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AProjectTestCharacter::MoveRight);
@@ -85,6 +94,22 @@ void AProjectTestCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector 
 void AProjectTestCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 	StopJumping();
+}
+
+void AProjectTestCharacter::Dash()
+{
+	if (!bDashInCooldown)
+	{
+		FVector Direction = GetActorForwardVector();
+		GetCharacterMovement()->AddImpulse(Direction * 3000, true);
+		bDashInCooldown = true;
+		GetWorld()->GetTimerManager().SetTimer(DashTimerHandler, this, &AProjectTestCharacter::DashCooldownReset, bDashInCooldown, false);
+	}
+}
+
+void AProjectTestCharacter::DashCooldownReset()
+{
+	bDashInCooldown = false;
 }
 
 void AProjectTestCharacter::TurnAtRate(float Rate)
