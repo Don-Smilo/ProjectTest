@@ -65,11 +65,14 @@ void AProjectTestCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+
+	// Buding actions
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AProjectTestCharacter::Dash);
 
+	// Binding axises
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AProjectTestCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &AProjectTestCharacter::MoveRight);
 
