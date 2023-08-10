@@ -42,6 +42,9 @@ AProjectTestCharacter::AProjectTestCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	
+	//FVector CameraOffset (0.0f, 100.f, 50.f);
+	//CameraBoom->AddWorldOffset(CameraOffset);
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
