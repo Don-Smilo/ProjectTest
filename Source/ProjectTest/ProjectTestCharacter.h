@@ -78,5 +78,20 @@ protected:
 	FTimerHandle DashTimerHandler;
 
 #pragma endregion
+
+
+
+#pragma region Aiming
+
+	void AimingStarted();
+
+	void AimingFinished();
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bAiming;
+
+	FVector CameraOffset = FVector(300.f, 50.f, 30.f);
+
+#pragma endregion
 };
 

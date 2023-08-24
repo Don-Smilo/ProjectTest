@@ -42,9 +42,6 @@ AProjectTestCharacter::AProjectTestCharacter()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-	
-	//FVector CameraOffset (0.0f, 100.f, 50.f);
-	//CameraBoom->AddWorldOffset(CameraOffset);
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -74,6 +71,9 @@ void AProjectTestCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AProjectTestCharacter::Dash);
+
+	PlayerInputComponent->BindAction("Aiming", IE_Pressed, this, &AProjectTestCharacter::AimingStarted);
+	PlayerInputComponent->BindAction("Aiming", IE_Released, this, &AProjectTestCharacter::AimingFinished);
 
 	// Binding axises
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &AProjectTestCharacter::MoveForward);
@@ -116,6 +116,22 @@ void AProjectTestCharacter::Dash()
 void AProjectTestCharacter::DashCooldownReset()
 {
 	bDashInCooldown = false;
+}
+
+void AProjectTestCharacter::AimingStarted()
+{
+	bAiming = true;
+
+	CameraBoom->AddLocalOffset(CameraOffset);
+
+	
+}
+
+void AProjectTestCharacter::AimingFinished()
+{
+	bAiming = false;
+
+	CameraBoom->AddLocalOffset(-CameraOffset);
 }
 
 void AProjectTestCharacter::TurnAtRate(float Rate)
